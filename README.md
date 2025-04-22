@@ -22,3 +22,5 @@ If you're running esxi environment for virtualization you can create the contain
 
 make sure to check variables in the deploy_container_lab.yml playbook
 
+you will need to get XRd images from cisco download site [Containerlab XRd page](https://containerlab.dev/manual/kinds/xrd/)
+TODO, finish setting up TRex docker container
