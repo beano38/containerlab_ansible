@@ -1,0 +1,43 @@
+name: simple_lab
+
+mgmt:
+  network: mgmt_intf
+  bridge: mgmt_bridge
+  ipv4-subnet: 172.16.100.0/24
+  ipv4-gw: 172.16.100.1
+
+topology:
+  kinds:       
+    xrd:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:24.4.2
+      env:
+        CLAB_MGMT_VRF: Mgmt-intf
+        IPv4_GW: 172.16.100.1
+
+  nodes:
+    PE.11:
+      kind: xrd
+      startup-config: configs/xrd_config.cfg
+      mgmt-ipv4: 172.16.100.11
+
+    PE.12:
+      kind: xrd
+      startup-config: configs/xrd_config.cfg
+      mgmt-ipv4: 172.16.100.12
+
+    PE.13:
+      kind: xrd
+      startup-config: configs/xrd_config.cfg
+      mgmt-ipv4: 172.16.100.13
+
+    PE.14:
+      kind: xrd
+      startup-config: configs/xrd_config.cfg
+      mgmt-ipv4: 172.16.100.14
+
+  links:
+    - endpoints: ["PE.11:Gi0-0-0-0", "PE.12:Gi0-0-0-0"]
+    - endpoints: ["PE.12:Gi0-0-0-1", "PE.13:Gi0-0-0-1"]
+    - endpoints: ["PE.13:Gi0-0-0-0", "PE.14:Gi0-0-0-0"]
+    - endpoints: ["PE.14:Gi0-0-0-1", "PE.11:Gi0-0-0-1"]

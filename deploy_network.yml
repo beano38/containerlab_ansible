@@ -1,0 +1,12 @@
+---
+- name: Deploy Network
+  connection: local
+  hosts: aps
+  gather_facts: False
+
+  tasks:
+
+  - name: Render WiFi APs
+    ansible.builtin.template:
+      src: ap3702_bridge.j2
+      dest: temp/{{ hostname }}.txt

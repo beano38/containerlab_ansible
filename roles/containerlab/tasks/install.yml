@@ -1,0 +1,33 @@
+---
+- name: Add containerlab repo
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/netdevops.list
+    content: deb [trusted=yes] https://netdevops.fury.site/apt/ /
+  become: true
+
+- name: Install containerlab using apt
+  ansible.builtin.apt:
+    name: containerlab
+    state: present
+    update_cache: true
+  become: true
+
+- name: Create clab_admins group
+  ansible.builtin.group:
+    name: clab_users
+    state: present
+  become: true
+
+- name: Ensures Image path exists
+  ansible.builtin.file:
+    path: labs/{{ lab_name }}/configs
+    state: directory
+
+- name: Ensure clab users are added to clab_admins group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: clab_admins
+    append: true
+  become: true
+  with_items: "{{ clab_users }}"
+

@@ -1,0 +1,15 @@
+---
+
+image_directory: images
+
+# XRd
+sysctl:
+  - name: fs.inotify.max_user_instances
+    value: 64000
+  - name: fs.inotify.max_user_watches
+    value: 64000
+  
+xrd_version: 24.4.2
+
+# Unique to lab
+lab_name: simple_lab

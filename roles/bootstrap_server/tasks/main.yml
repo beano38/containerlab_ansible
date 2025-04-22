@@ -1,0 +1,93 @@
+---
+- name: deploy OVA file
+  community.vmware.vmware_deploy_ovf:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    datacenter: "{{ datacenter }}"
+    datastore: "{{ datastore }}"
+    # folder: "{{ folder }}"
+    networks: 
+      VM Network: "{{ network }}"
+    allow_duplicates: no
+    ova: "{{ ova_file }}"
+    name: "{{ vm_guestname }}"
+    power_on: no
+  delegate_to: localhost
+
+- name: configure cloud-init VM
+  community.vmware.vmware_guest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    name: "{{ vm_guestname }}"
+    datacenter: "{{ datacenter }}"
+    annotation: "{{ annotation | default(omit) }}"
+    hardware: "{{ hardware }}"
+    cdrom: "{{ cdrom | default(omit) }}"
+    advanced_settings:
+      - key: guestinfo.userdata
+        value: "{{ lookup('template', 'userdata.j2') | b64encode }}"
+      - key: guestinfo.userdata.encoding
+        value: base64
+      - key: guestinfo.metadata
+        value: "{{ lookup('template', 'metadata.j2') | b64encode }}"
+      - key: guestinfo.metadata.encoding
+        value: base64
+    state: present
+  delegate_to: localhost
+  when: cloud_init
+
+- name: configure VM
+  community.vmware.vmware_guest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    name: "{{ vm_guestname }}"
+    datacenter: "{{ datacenter }}"
+    annotation: "{{ annotation | default(omit) }}"
+    hardware: "{{ hardware }}"
+    cdrom: "{{ cdrom | default(omit) }}"
+    state: present
+  delegate_to: localhost
+  when: not cloud_init
+
+- name: configure disks
+  community.vmware.vmware_guest_disk:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    datacenter: "{{ datacenter }}"
+    name: "{{ vm_guestname }}"
+    disk: "{{ disks | default(omit) }}"
+  delegate_to: localhost
+
+- name: start VM
+  community.vmware.vmware_guest:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    name: "{{ vm_guestname }}"
+    state: poweredon
+    wait_for_ip_address: yes
+  delegate_to: localhost
+
+- name: gather vm facts
+  community.vmware.vmware_guest_info:
+    hostname: "{{ ansible_host }}"
+    username: "{{ ansible_user }}"
+    password: "{{ ansible_password }}"
+    validate_certs: no
+    name: "{{ vm_guestname }}"
+    datacenter: "{{ datacenter }}"
+  delegate_to: localhost
+  register: vm_facts
+
+- name: IP address
+  debug:
+    msg: "{{ vm_facts.instance.ipv4 }}"

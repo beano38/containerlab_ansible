@@ -1,0 +1,27 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+hostname: cnc01
+ip_address: 192.168.71.41
+
+ansible_host: 192.168.71.41
+
+# Virtual Machine Configurations
+esxi_host: esxi03
+vm_guestname: cnc01
+vm_guest_ipv4: 192.168.71.41
+gateway_v4: 192.168.68.1
+
+cloud_init: false
+ova_file: files/ovas/cw-na-cnc-advantage-svm-7.1.0-567-develop-250313.ova
+network: Internet
+hardware:
+  num_cpus: 12
+  memory_mb: 98304
+disks:
+  - size_gb: 1024
+    datastore: "{{ datastore }}"
+    unit_number: 0
+    scsi_controller: 0
+    type: thin
+
+/Users/beelder/containerlab/files/ovas/cw-na-cnc-advantage-svm-7.1.0-567-develop-250313.ova

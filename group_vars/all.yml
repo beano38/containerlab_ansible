@@ -1,0 +1,40 @@
+---
+ansible_ssh_pass: letmein
+
+domain_name: eldernet.lan
+search_domains:
+  - home.lan
+  - eldernet.lan
+name_servers:
+  - 192.168.68.1
+
+logging:
+  server: 192.168.1.36
+
+timezone: America/New_York
+
+snmp:
+  community_rw: letmein
+
+tacacs:
+  key: letmein
+
+users:
+  - name: beelder
+    full_name: Ben Elder
+    password: letmein
+    groups: admin
+  - name: ben
+    full_name: Ben Elder
+    password: letmein
+    groups: admin
+  - name: nso
+    full_name: NSO Admin
+    password: nso123
+    groups: admin
+
+vlan_10:
+  name: Internet
+  default_gateway: 192.168.68.1
+  default_mask: 255.255.252.0
+  default_cidr: 22

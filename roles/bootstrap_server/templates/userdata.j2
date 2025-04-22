@@ -1,0 +1,65 @@
+#cloud-config
+
+timezone: {{ timezone | default('UTC') }}
+
+# Allow users to login with a password
+ssh_pwauth: true
+
+# Update cache and all installed packages
+package_update: true
+package_upgrade: true
+package_reboot_if_required: false
+packages:
+  - tree
+  - python3-pip
+
+users:
+{% for user in users %}
+  - name: {{ user.name }}
+    groups: {{ user.groups }}
+    gecos: {{ user.full_name }}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: {{ user.shell | default('/bin/bash') }}
+    passwd: {{ user.password | password_hash('sha512') }} 
+    lock_passwd: false
+{% if user.ssh_authorized_keys is defined %}
+    ssh_authorized_keys:
+{% for key in user.ssh_authorized_keys %}
+      - {{ key }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+# Deploy defined SSH keys on server
+{% if ssh_keys is defined %}
+ssh_deletekeys: false
+ssh_keys:
+{% if ssh_keys.rsa_private is defined %}
+  rsa_private: |
+    {{ ssh_keys.rsa_private | indent(width=4) -}}
+{% endif %}
+{% if ssh_keys.rsa_public is defined %}
+  rsa_public: {{ ssh_keys.rsa_public }}
+{% endif %}
+{% if ssh_keys.ecdsa_private is defined %}
+  ecdsa_private: |
+    {{ ssh_keys.ecdsa_private | indent(width=4) -}}
+{% endif %}
+{% if ssh_keys.ecdsa_public is defined %}
+  ecdsa_public: {{ ssh_keys.ecdsa_public }}
+{% endif %}
+{% if ssh_keys.dsa_private is defined %}
+  dsa_private: |
+    {{ ssh_keys.dsa_private | indent(width=4) }}
+{% endif %}
+{% if ssh_keys.dsa_public is defined %}
+  dsa_public: {{ ssh_keys.dsa_public }}
+{% endif %}
+{% if ssh_keys.ed25519_private is defined %}
+  ed25519_private: |
+    {{ ssh_keys.ed25519_private | indent(width=4) }}
+{% endif %}
+{% if ssh_keys.ed25519_public is defined %}
+  ed25519_public: {{ ssh_keys.ed25519_public }}
+{% endif %}
+{% endif %}

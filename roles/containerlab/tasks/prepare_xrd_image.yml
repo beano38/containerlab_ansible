@@ -1,0 +1,28 @@
+---
+- name: Setup Environment
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  become: true
+  with_items: "{{ sysctl }}"
+
+- name: Ensures Image path exists
+  ansible.builtin.file:
+    path: "{{ image_directory }}/xrd/{{ xrd_version }}"
+    state: directory
+
+- name: Extract XRd Download Image to server
+  ansible.builtin.unarchive:
+    src: files/xrd/xrd-control-plane-container-x86.{{ xrd_version }}.tgz
+    dest: "{{ image_directory }}/xrd/{{ xrd_version }}"
+    creates: "{{ image_directory }}/xrd/{{ xrd_version }}/xrd-control-plane-container-x64.dockerv1.tgz"
+    group: docker
+
+- name: Create XRd Docker Image
+  community.docker.docker_image_load:
+    path: "{{ image_directory }}/xrd/{{ xrd_version }}/xrd-control-plane-container-x64.dockerv1.tgz"
+  register: result
+
+- name: Print the loaded image names
+  ansible.builtin.debug:
+    msg: "Loaded the following images: {{ result.image_names | join(', ') }}"

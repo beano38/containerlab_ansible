@@ -1,0 +1,9 @@
+# pip install -r requirements.txt
+wheel
+ansible
+ansible-lint
+requests
+# VMWare Tools
+pyvmomi
+# Encryption library for generation of RSA Keys
+passlib

@@ -1,0 +1,101 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+hostname: clab01
+ip_address: 192.168.71.31
+
+ansible_host: 192.168.71.31
+
+# Docker
+docker_users:
+  - ben
+  - beelder
+docker_path:
+  docker
+docker_install_compose: true
+
+# Container Lab
+clab_users:
+  - ben
+  - beelder
+
+# Virtual Machine Configurations
+esxi_host: esxi03
+vm_guestname: clab01
+vm_guest_ipv4: 192.168.71.31
+gateway_v4: 192.168.68.1
+
+cloud_init: true
+ova_file: files/ovas/focal-server-cloudimg-amd64.ova
+network: Internet
+hardware:
+  num_cpus: 14
+  memory_mb: 98304
+disks:
+  - size_gb: 512
+    datastore: "{{ datastore }}"
+    unit_number: 0
+    scsi_controller: 0
+    type: thin
+
+ssh_keys:
+  rsa_public: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7FK3o6OT2sMMeiLAH1aikDyA4VL0FuI1dD78nPpxAvAmpngCrx8iI6Iqf0qxas0SVhGGrhXmUJfHrmZohNePjJm7UvReCmvBgz23cDtR27UvikSAgu9a//kcHyQY/GnW7cFPOucKYvXhsYItT4FUKXjniSpPOF3CA+bEDf+xdZQxFzPQ2No525D5qMf+nEnZS9g1q0PNlIYfTIsLV5HC+5fJtOJ+sCZOjcvIqdzuT4KYRPXhz1PNt2ciZDlTjea3qD7au3jtxc+D8GZSzorovnC9Xwi9IoMe6LUvf2v0NXfJKbyyDovL9yaBV3ekgkRxpUVRysPRe8D4BkUsRF/7h9qtQg8thQ6MBfWqJo8WdR18h/fsH8D5JjdqOKaJsHHqhDPBXjzqImu3+g7raaJwKaAOo1rzhxbAmapBpf3uyfaOnSTejP4dWUuX2B6hjmTyrwrmmWTS2SYadIWOUmX739fCFZ8ZX9pfBWZoOCHBky52PuZMe7rb2zU1ZZACetoSQdUdZtEF6kgKDsnRBDoN7nyYEDHtApBOFq4WdEqFnj6XICJG0IaPCvifbzahR5kuEltt3g3uupMjzjL7eJkX8jVUEisAqEeh/rtGwnZ7dhkUEcwJmomKENF3PXlB/iK1tMFu4WmniJ0g/3ZgEQD778AAAC3Z/sSttpifBFMp4yw==
+  rsa_private: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    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
+    Vg4wSPQfyasAAAAAAQID
+    -----END OPENSSH PRIVATE KEY-----
+  ecdsa_public: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIB/prSSYo9a11PMEkX32AP+jCugyQKbbYGlfpMvanTbB3b1J6/Uap+y5P6SV8NeYP3are8KG/I+EDXGyNJ8yOA=
+  ecdsa_private: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAaAAAABNlY2RzYS
+    1zaGEyLW5pc3RwMjU2AAAACG5pc3RwMjU2AAAAQQSAf6a0kmKPWtdTzBJF99gD/owroMkC
+    m22BpX6TL2p02wd29Sev1GqfsuT+klfDXmD92q3vChvyPhA1xsjSfMjgAAAAmMnJXZ7JyV
+    2eAAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIB/prSSYo9a11PM
+    EkX32AP+jCugyQKbbYGlfpMvanTbB3b1J6/Uap+y5P6SV8NeYP3are8KG/I+EDXGyNJ8yO
+    AAAAAgZMYeUTtZRpe8saEV8dXaMqmqzpzaIh4WmVTFC+Td9vAAAAAA
+    -----END OPENSSH PRIVATE KEY-----

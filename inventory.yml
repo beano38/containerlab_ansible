@@ -1,0 +1,12 @@
+networks:
+  children:
+    aps:
+      hosts:
+        bridgeap01:
+    hypervisors:
+      hosts:
+        esxi[01:03]:
+    virtual_machines:
+      hosts:
+        clab01:
+        cnc01:

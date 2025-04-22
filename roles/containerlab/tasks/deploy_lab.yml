@@ -1,0 +1,15 @@
+---
+- name: Ensures Lab Directory Exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ lab_name }}/configs"
+    state: directory
+
+- name: Sample Topology
+  ansible.builtin.template:
+    src: simple_lab.j2
+    dest: "{{ ansible_env.HOME }}/{{ lab_name }}/simple_lab.clab.yaml"
+
+- name: Enable default config
+  ansible.builtin.copy:
+    src: files/xrd_config.cfg
+    dest: "{{ ansible_env.HOME }}/{{ lab_name }}/configs"

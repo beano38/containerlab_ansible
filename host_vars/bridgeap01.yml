@@ -1,0 +1,7 @@
+---
+hostname: bridgeap01
+ip_address: 192.168.71.11
+
+dot11_0:
+  station_role: root
+  bridge_mac: f872.ea8e.1aab

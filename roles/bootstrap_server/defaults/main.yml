@@ -1,0 +1,18 @@
+---
+datacenter: ha-datacenter
+datastore: SAS RAID6
+folder: /
+network: Internet
+cloud_init: True
+ova_file: focal-server-cloudimg-amd64.ova
+
+hardware:
+  num_cpus: 4
+  memory_mb: 4096
+
+disks:
+  - size_gb: 32
+    datastore: "{{ datastore }}"
+    unit_number: 0
+    scsi_controller: 0
+    type: thin

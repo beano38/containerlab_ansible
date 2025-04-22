@@ -1,0 +1,5 @@
+---
+- name: Ensures Image path exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ image_directory }}/trex/configs"
+    state: directory

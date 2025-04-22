@@ -1,0 +1,25 @@
+---
+- name: Install Containerlab
+  ansible.builtin.include_tasks:
+    file: install.yml
+  when: install
+
+- name: Prepare XRd Images
+  ansible.builtin.include_tasks:
+    file: prepare_xrd_image.yml
+  when: prepare_images
+
+- name: Prepare Trex Images
+  ansible.builtin.include_tasks:
+    file: prepare_trex_image.yml
+  when: prepare_images
+
+- name: restart server
+  ansible.builtin.reboot:
+  become: true
+  when: install
+
+- name: Deploy sample lab
+  ansible.builtin.include_tasks:
+    file: deploy_lab.yml
+  when: deploy_lab

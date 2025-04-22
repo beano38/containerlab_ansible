@@ -1,0 +1,22 @@
+instance-id: {{ vm_guestname }}
+local-hostname: {{ vm_guestname }}
+
+network:
+  version: 2
+  ethernets:
+    ens192:
+      addresses: 
+        - {{ vm_guest_ipv4 }}/{{ cidr | default('22') }}
+      gateway4: {{ gateway_v4 }}
+      dhcp4: false
+      nameservers:
+        addresses:
+{% for name_server in name_servers %}
+          - {{ name_server }}
+{% endfor %}
+        search:
+{% for search_domain in search_domains %}
+          - {{ search_domain }}
+{% endfor %}
+      dhcp6: true
+      optional: true

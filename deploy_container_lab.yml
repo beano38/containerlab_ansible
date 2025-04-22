@@ -1,0 +1,19 @@
+---
+- name: Deploy ContainerLab
+  hosts: clab01
+  gather_facts: true
+  
+  vars:
+    install: true
+    prepare_images: true
+    deploy_lab: false
+   
+  tasks:
+    - name: Install Docker
+      include_role:
+        name: geerlingguy.docker
+      when: install
+
+    - name: Deploy Containerlab
+      include_role: 
+        name: containerlab

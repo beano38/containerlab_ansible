@@ -1,0 +1,64 @@
+---
+- name: Deploy Virtual Machines
+  hosts: virtual_machines
+  gather_facts: False
+
+  tasks:
+
+    - include_vars: host_vars/esxi03.yml
+      when: '"esxi03" in esxi_host'
+      tags: [ always ]
+    - include_vars: bootstrap_servers.yml
+      tags: [ always ]
+
+    - name: Render userdata
+      template: 
+        src: roles/bootstrap_server/templates/userdata.j2
+        dest: temp/userdata_{{ vm_guestname }}.yml
+      delegate_to: localhost
+      tags: [ never, debug ]
+
+    - name: Render metadata
+      template: 
+        src: roles/bootstrap_server/templates/metadata.j2
+        dest: temp/metadata_{{ vm_guestname }}.yml
+      delegate_to: localhost
+      tags: [ never, debug ]
+
+    - name: gather vm facts
+      community.vmware.vmware_guest_info:
+        hostname: "{{ ansible_host }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_password }}"
+        validate_certs: no
+        name: "{{ vm_guestname }}"
+        datacenter: "{{ datacenter }}"
+      delegate_to: localhost
+      register: vm_facts
+      tags: [ never, facts ]
+
+    - name: Show result
+      debug:
+        var: vm_facts.instance.hw_power_status
+      tags: [ never, facts ]
+
+    - name: Generate RSA Keys
+      community.crypto.openssh_keypair:
+        path: "temp/id_ssh_rsa_{{ vm_guestname }}"
+        type: rsa
+        regenerate: always
+      delegate_to: localhost
+      tags: [ never, ssh ]
+
+    - name: Generate ECDSA Keys
+      community.crypto.openssh_keypair:
+        path: "temp/id_ssh_ecdsa_{{ vm_guestname }}"
+        type: ecdsa
+        regenerate: always
+      delegate_to: localhost
+      tags: [ never, ssh ]
+
+    - name: Build VMs
+      include_role: 
+        name: bootstrap_server
+

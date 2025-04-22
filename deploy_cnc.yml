@@ -1,0 +1,15 @@
+---
+- name: Deploy Cisco Network Controller
+  hosts: cnc01
+  gather_facts: true
+  
+  vars:
+    install: false
+    prepare_images: true
+    deploy_lab: false
+   
+  tasks:
+
+    - name: Deploy CNC
+      include_role: 
+        name: cnc
