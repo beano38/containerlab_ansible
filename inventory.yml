@@ -9,4 +9,4 @@ networks:
     virtual_machines:
       hosts:
         clab01:
-        cnc01:
+        mdt01:

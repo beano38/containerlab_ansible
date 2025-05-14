@@ -2,5 +2,6 @@
 ---
 collections:
   - name: community.vmware
+  - name: community.docker
 roles:
   - name: geerlingguy.docker

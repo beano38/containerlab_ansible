@@ -1,0 +1,36 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+hostname: mdt01
+ip_address: 192.168.71.32
+
+ansible_host: 192.168.71.32
+
+# Docker
+docker_users:
+  - ben
+  - beelder
+docker_path:
+  docker
+docker_install_compose: true
+
+# Containers
+telegraf: true
+
+# Virtual Machine Configurations
+esxi_host: esxi03
+vm_guestname: mdt01
+vm_guest_ipv4: 192.168.71.32
+gateway_v4: 192.168.68.1
+
+cloud_init: true
+ova_file: files/ovas/focal-server-cloudimg-amd64.ova
+network: Internet
+hardware:
+  num_cpus: 4
+  memory_mb: 8192
+disks:
+  - size_gb: 64
+    datastore: "{{ datastore }}"
+    unit_number: 0
+    scsi_controller: 0
+    type: thin

@@ -1,0 +1,87 @@
+[global_tags]
+
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = ""
+  hostname = ""
+  omit_hostname = false
+
+[[outputs.influxdb]]
+  urls = ["http://influxdb:8086"]
+  database = "mdt"
+  exclude_database_tag = true
+  skip_database_creation = false
+  retention_policy = "autogen"
+  username = "mdt"
+  password = "DageCdUHB45#CSaa"
+  user_agent = "telegraf"
+  tagexclude = ["influx_database"]
+  [outputs.influxdb.tagpass]
+    influx_database = ["mdt"]
+
+###############################################################################
+#                                  INPUTS                                     #
+###############################################################################
+
+{% if telegraf_plugins_default is defined and telegraf_plugins_default is iterable %}
+{% for item in telegraf_plugins_default %}
+[[inputs.{{ item.plugin }}]]
+{% if item.interval is defined %}
+    interval = "{{ item.interval }}s"
+{% endif %}
+{% if item.config is defined and item.config is iterable %}
+{% for items in item.config %}
+    {{ items }}
+{% endfor %}
+{% endif %}
+{% if item.tags is defined and item.tags is iterable %}
+[inputs.{{ item.plugin }}.tags]
+{% for items in item.tags %}
+    {{ items }}
+{% endfor %}
+{% endif %}
+{% if item.tagpass is defined and item.tagpass is iterable %}
+[inputs.{{ item.plugin }}.tagpass]
+{% for items in item.tagpass %}
+    {{ items }}
+{% endfor %}
+{% endif %}
+{% if item.tagdrop is defined and item.tagdrop is iterable %}
+[inputs.{{ item.plugin }}.tagdrop]
+{% for items in item.tagdrop %}
+    {{ items }}
+{% endfor %}
+{% endif %}
+{% if item.objects is defined and item.objects is iterable %}
+{% for object in item.objects %}
+[[inputs.{{ item.plugin }}.object]]
+  ObjectName = {{ object.name | to_json }}
+  Instances = {{ object.instances | default(["*"]) | to_json }}
+  Counters = {{ object.counters | default(["*"]) | to_json }}
+  Measurement = {{ object.measurement | default("win_perf_counters") | to_json }}
+  IncludeTotal = {{ object.total | default(false) | string | lower }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if telegraf_plugins_default is defined and telegraf_plugins_default|length == 0 %}
+{% if telegraf_plugins_extra is defined and telegraf_plugins_extra.keys() | length == 0 %}
+# No plugins configured, added a mem plugin so telegraf doesn't stop working.
+[[inputs.mem]]
+{% endif %}
+{% endif %}
+
+[[inputs.cisco_telemetry_mdt]]
+  transport = "grpc"
+  service_address = ":57000"
+  embedded_tags = ["Cisco-IOS-XE-docsis-oper:docsis-oper-data/cm-summary-total/cm-if-summary-totals/interface",
+                   "Cisco-IOS-XE-docsis-oper:docsis-oper-data/cable-modem/us-chan/chan-index"]
+  [inputs.cisco_telemetry_mdt.tags]
+    influx_database = "mdt"

@@ -1,0 +1,44 @@
+---
+- name: Adding Telegraf group
+  group:
+    name: telegraf
+    state: present
+    gid: 995
+  become: true
+
+- name: Adding Telegraf user
+  user:
+    name: telegraf
+    group: telegraf
+    state: present
+    create_home: False
+    home: /etc/telegraf
+    uid: 997
+    system: True
+  become: true
+
+- name: Ensure vm users are added to telegraf group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: telegraf
+    append: true
+  become: true
+  with_items: "{{ docker_users }}"
+
+- name: Create directories
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/telegraf"
+    owner: telegraf
+    group: telegraf
+    mode: 0750
+    state: directory
+  become: true
+
+- name: Generate Telegraf Configuration
+  ansible.builtin.template:
+    src: telegraf.conf.j2
+    dest: "{{ ansible_env.HOME }}/telegraf/telegraf.conf"
+    owner: telegraf
+    group: telegraf
+    mode: 0640
+  become: true

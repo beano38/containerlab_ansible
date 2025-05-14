@@ -1,0 +1,17 @@
+---
+
+
+# defaults - /etc/telegraf/telegraf.conf
+telegraf_plugins_default:
+  - plugin: cpu
+    config:
+      - percpu = true
+  - plugin: disk
+  - plugin: diskio
+  - plugin: mem
+  - plugin: nstat
+  - plugin: system
+  - plugin: swap
+  - plugin: netstat
+  - plugin: processes
+  - plugin: kernel

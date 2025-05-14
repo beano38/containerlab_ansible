@@ -1,0 +1,33 @@
+---
+- name: Deploy MDT Stack
+  hosts: mdt01
+  gather_facts: true
+  
+  vars:
+    install: false
+   
+  tasks:
+    - name: Install Docker
+      include_role:
+        name: geerlingguy.docker
+      when: install
+
+    - name: Deploy Telegraf Container
+      include_role: 
+        name: telegraf
+      when: telegraf
+
+    - name: Build compose file
+      ansible.builtin.template:
+        src: mdt_compose.yml.j2
+        dest: "{{ ansible_env.HOME }}/docker-compose.yml"
+
+    - name: Docker UP
+      community.docker.docker_compose_v2:
+        project_src: "{{ ansible_env.HOME }}"
+      register: output
+    
+    - name: Show Results
+      ansible.builtin.debug:
+        var: output
+

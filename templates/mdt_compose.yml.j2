@@ -1,0 +1,26 @@
+---
+services:
+
+{% if telegraf is defined %}
+  telegraf:
+    image: telegraf:latest
+    hostname: {{ hostname }} 
+    container_name: telegraf
+    ports:
+      - 57000:57000
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - {{ ansible_env.HOME }}/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /:/hostfs:ro
+      - /etc:/hostfs/etc:ro
+      - /proc:/hostfs/proc:ro
+      - /sys:/hostfs/sys:ro
+      - /var/run:/var/run:ro
+    environment:
+      HOST_MOUNT_PREFIX: /hostfs
+      HOST_ETC: /hostfs/etc
+      HOST_PROC: /hostfs/proc
+      HOST_SYS: /hostfs/sys
+    restart: always
+    user: "997"
+{% endif %}
